@@ -1,0 +1,17 @@
+{
+	"routine": [
+		{
+			"type": "Dungeon",
+			"stage": "Dragon",
+			"basement": 12,
+			"times": 10
+		}
+	],
+	"start": {
+		"type": "Dungeon",
+		"stage": "Dragon",
+		"basement": 12,
+		"times": -1
+	},
+	"bj5_paste-message": "Bj5 inv"
+}

@@ -1,0 +1,6 @@
+Errors Handling by creating an Error class, with description and id => Done
+Find a better name for the Run.py class => Done
+Complete this class => Done
+Add Image Gestion class => Done
+Implemente Image Analysis => 
+Create a Git repo => 

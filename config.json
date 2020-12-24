@@ -1,0 +1,17 @@
+{
+	"language": "Fr-FR",
+	"screen": {
+		"top": 0, 
+		"left": 0, 
+		"width": 1800, 
+		"height": 1200
+	},
+	"email": "mathis.figuet@orange.fr",
+	"summoners_name": "Zennyth",
+	"web": {
+		"room": 0,
+		"api": "https://sw.mathis-figuet.com",
+		"token" : "..."
+	},
+	"port": "8080"
+}
