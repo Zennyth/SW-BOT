@@ -1,5 +1,6 @@
 from Class.Exception import Exception
 from Class.Action import Action
+from Class.ImageAnalyser import ImageAnalyser
 
 import cv2
 import numpy as np
@@ -9,8 +10,9 @@ import mouse as m
 import time
 import random as r
 import numpy as np
+import imutils
 
-BOUNDING_BOX = {'top': 50, 'left': 1800, 'width': 2000, 'height': 1200}
+BOUNDING_BOX = {'top': 0, 'left': 0, 'width': 1920, 'height': 1080}
 SCT = mss()
 
 PATH = './Ressources/'
@@ -30,7 +32,7 @@ class Template():
 		if self._required:
 			return Exception(0, "no coordinates")
 		else:
-			if self._iteration <= self.maxIteration:
+			if self._iteration <= self._maxIteration:
 				self._iteration += 1
 				return Exception(0, "no coordinates")
 			else:
@@ -38,14 +40,9 @@ class Template():
 				return False
 
 	def execute(self):
-		sct_img = SCT.grab(BOUNDING_BOX)
-		img_init = np.array(Image.frombytes("RGB", sct_img.size, sct_img.bgra, "raw", "RGBX"))
-		img_gray = cv2.cvtColor(img_init,cv2.COLOR_RGB2GRAY)
-		w, h = self._template.shape[::-1]
-		result = cv2.matchTemplate(img_gray, self._template, cv2.TM_CCOEFF_NORMED)
-		loc = np.where( result >= self._threshold )
-		if len(loc[0]) > 0:
-			coordinates = list(zip(*loc[::-1]))[0]
+		found = ImageAnalyser.find(self)
+		if found:
+			coordinates = found
 			point = (int(coordinates[0] + self._template.shape[1]*r.random() + BOUNDING_BOX['left']), int(coordinates[1] + self._template.shape[0]*r.random() + BOUNDING_BOX['top']))
 			for action in self._actions:
 				action.execute(point)
@@ -55,7 +52,7 @@ class Template():
 			if self._required:
 				return Exception(0, "no coordinates")
 			else:
-				if self._iteration <= self.maxIteration:
+				if self._iteration <= self._maxIteration:
 					self._iteration += 1
 					return Exception(0, "no coordinates")
 				else:

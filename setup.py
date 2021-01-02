@@ -6,6 +6,10 @@ from Class.Template import Template
 from Class.Action import Action
 from Class.Sequence import Sequence
 from Class.Farm import Farm
+from Class.ImageAnalyser import ImageAnalyser
+from Class.Socket import Socket
+
+from PIL import ImageGrab
 
 #/ Config and Setup Datalayers init \# 
 
@@ -27,7 +31,7 @@ actions = {
 #/ Templates enumeration \#
 
 templates = {
-	"test_template": Template("autofarm_repetition"),
+	"test_template": Template("autofarm_batiment"),
 	"autofarm_replay": Template("autofarm_rejouer"),
 	"autofarm_repetition-battle": Template("autofarm_repetition"),
 	"refill-energy_shop": Template("shop"),
@@ -64,11 +68,26 @@ farms = {
 	"bj5 2": Farm([sequences["bj5-refill"], sequences["bj5_launch-battle"], sequences["bj5_invite-chat"]]),
 }
 
+#/ Socket \#
+
+socket = Socket()
+
 #/ Building the global registry \# 
+
+if not('screen' in config._data.keys()):
+	img = ImageGrab.grab()
+	config._data["screen"] = {
+		"top": 0,
+		"left": 0,
+		"width": img.size[0],
+		"height": img.size[1]
+	}
+	ImageAnalyser.set_screen(config._data["screen"])
 
 registry = {
 	'config': config,
 	'setup': setup,
+	'socket': socket,
 	'in_game': {
 		'types': types,
 		'actions': actions,

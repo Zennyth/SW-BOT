@@ -7,5 +7,5 @@ import time
 # print(registry['in_game']['templates']['autofarm_repetition-battle'].execute())
 
 while True:
-	registry['in_game']['farms']['autofarm'].selectSequence()
+	registry['in_game']['farms']['test_farm'].selectSequence()
 	time.sleep(0.5)
