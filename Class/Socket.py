@@ -3,71 +3,40 @@ import time
 
 sio = socketio.Client()
 
-status = {
-    "state": "on",
-    "history": [
-        {
-            "type": "db",
-            "stage": "Dragon B12",
-            "time": "12",
-            "progress": "In progress"
-        },
-        {
-            "type": "gb",
-            "stage": "Giant B12",
-            "time": "14",
-            "progress": "Complete"
-        },
-        {
-            "type": "gb",
-            "stage": "Giant B12",
-            "time": "15.2",
-            "progress": "Complete"
-        }
-    ]
-}
-
-data_create = {
-    "credentials": {
-        "API_KEY": "API_KEY-SWRM-python",
-    },
-    "room": {
-        "id": "1002",
-        "password": "7400"
-    }
-}
-
 class Socket():
-    def __init__(self):
-        global data_create
-        global status
-		self._socket = socketio.Client()
-        self._socket.connect("ws://localhost:8080")
-        self.room_create(data_create)
-        while 1:
-            self.send_status(status)
-            time.sleep(5)
+    def __init__(self, api, room, status):
+        print(api, room)
+        self._isConnected = False
+        self._socket = socketio.Client()
+        time.sleep(1)
+        self._socket.connect(api["url"]) #ws://sw-bot.mathis-figuet.com
+        time.sleep(1)
+        self.room_create({"credentials": api["credentials"], "room": room})
+        self._status = status
+        
 
-    @sio.event
-    def connect():
-        print("Connection established.")
+        @self._socket.event
+        def connect(self):
+            print("Connection established.")
 
-    def room_create(data):
-        sio.emit("room_create", data)
+        @self._socket.event
+        def update_order(order):
+            print('order received : ', order)
+            if "request" in order.keys() and order["request"] == "synchronise":
+                self.send_status(status.send())
 
-    def send_status(status):
-        sio.emit("send_status", status)
+        @self._socket.event
+        def is_connected(connected):
+            print('Is connected : ', connected)
+            self._isConnected = True
 
-    @sio.event
-    def update_order(order):
-        print('order received : ', order)
-        if "request" in order.keys() and order["request"] == "synchronise":
-            send_status(status)
+        @self._socket.event
+        def disconnect(self):
+            print("Disconected from webSocket.")
 
-    @sio.event
-    def is_connected(connected):
-        print('Is connected : ', connected)
+    def room_create(self, data):
+            self._socket.emit("room_create", data)
 
-    @sio.event
-    def disconnect():
-        print("Disconected from webSocket.")
+    def send_status(self, status):
+        print("Send status ...")
+        self._socket.emit("send_status", status)

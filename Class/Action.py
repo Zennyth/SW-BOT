@@ -13,12 +13,12 @@ class Action():
 		self._description = description 
 		self._task = task
 
-	def execute(self, point):
+	def execute(self, point, status = None):
 		if self._wait > 0:
 			time.sleep(self._wait)
 
 		if self._id == -1:
-			Exception(2, "Quizz !")
+			Exception(2, "Quizz !", status)
 		elif self._id == 0:
 			m.move(point[0], point[1])
 			time.sleep(r.random())

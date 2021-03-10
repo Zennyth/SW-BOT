@@ -19,6 +19,7 @@ class ImageAnalyser():
 		sct_img = SCT.grab(screen)
 		img_init = np.array(Image.frombytes("RGB", sct_img.size, sct_img.bgra, "raw", "RGBX"))
 		img_gray = cv2.cvtColor(img_init,cv2.COLOR_RGB2GRAY)
+		# print(template)
 
 		(tH, tW) = template._template.shape[:2]
 		found = None

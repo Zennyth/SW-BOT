@@ -7,7 +7,6 @@ from Class.Action import Action
 from Class.Sequence import Sequence
 from Class.Farm import Farm
 from Class.ImageAnalyser import ImageAnalyser
-from Class.Socket import Socket
 
 from PIL import ImageGrab
 
@@ -19,6 +18,8 @@ setup = DataLayer('setup.json')
 #/ Types of dungeon enumeration \#
 
 types = {
+	"start": Type("launch", "Launch game", "launch"),
+	"db": Type("db12", "Dragon's B12"),
 }
 
 #/ Actions enumeration \#
@@ -31,6 +32,11 @@ actions = {
 #/ Templates enumeration \#
 
 templates = {
+	"launch_skip-event" : Template("launch_skip-event"),
+	"launch_start" : Template("launch_start"),
+	"launch_coffre" : Template("launch_coffre"),
+	"autobattle_batiment": Template("autofarm_batiment"),
+	"autobattle_bouton": Template("autofarm_bouton"),
 	"test_template": Template("autofarm_batiment"),
 	"autofarm_replay": Template("autofarm_rejouer"),
 	"autofarm_repetition-battle": Template("autofarm_repetition"),
@@ -51,6 +57,10 @@ templates = {
 
 sequences = {
 	"test_sequence": Sequence(templates = [templates["test_template"]]),
+	"launch_skip-event": Sequence(templates = [templates["launch_skip-event"]]),
+	"launch_start": Sequence(templates = [templates["launch_start"]]),
+	"launch_coffre": Sequence(templates = [templates["launch_coffre"]]),
+	"autobattle_menu": Sequence(templates = [templates["autobattle_batiment"], templates["autobattle_bouton"]]),
 	"autofarm_launch-battles": Sequence(templates = [templates["autofarm_replay"], templates["autofarm_repetition-battle"]]),
 	"autofarm_launch-launch": Sequence(templates = [templates["autofarm_repetition-battle"]]),
 	"autofarm_launch-refill": Sequence(templates = [templates["refill-energy_shop"], templates["refill-energy_energy"], templates["refill-energy_validate"], templates["refill-energy_ok"], templates["refill-energy_close"], templates["autofarm_repetition-battle"]]),
@@ -59,18 +69,28 @@ sequences = {
 	"bj5-refill": Sequence(templates = [templates["refill-energy_shop"], templates["refill-energy_energy"], templates["refill-energy_validate"], templates["refill-energy_ok"], templates["refill-energy_close"], templates["autofarm_repetition-battle"]]),
 }
 
-#/ Sequences enumeration \#
+#/ Farms enumeration \#
 
 farms = {
-	"test_farm": Farm([sequences["test_sequence"]]),
-	"autofarm": Farm([sequences["autofarm_launch-battles"], sequences["autofarm_launch-refill"]]),
-	"bj5": Farm([sequences["bj5-refill"], sequences["bj5_launch-battle"]]),
-	"bj5 2": Farm([sequences["bj5-refill"], sequences["bj5_launch-battle"], sequences["bj5_invite-chat"]]),
+	"launch": Farm([sequences["launch_skip-event"], sequences["launch_start"], sequences["launch_coffre"], sequences["autobattle_menu"]], types["db"], 2),
+	"test_farm": Farm([sequences["test_sequence"]], types["db"], 0),
+	"autofarm": Farm([sequences["autofarm_launch-battles"], sequences["autofarm_launch-refill"]], types["db"], 0),
+	"bj5": Farm([sequences["bj5-refill"], sequences["bj5_launch-battle"]], types["db"], 1),
+	"bj5 2": Farm([sequences["bj5-refill"], sequences["bj5_launch-battle"], sequences["bj5_invite-chat"]], types["db"], 1),
 }
+
+#/ Status \#
+
+from Class.Status import Status
+status = Status([])
 
 #/ Socket \#
 
-socket = Socket()
+from Class.Socket import Socket
+socket = Socket(config._data["api"], config._data["room"], status)
+
+#/ Mail \#
+# send_mail('Bonjour ce mail provient d un bot')
 
 #/ Building the global registry \# 
 
@@ -88,6 +108,7 @@ registry = {
 	'config': config,
 	'setup': setup,
 	'socket': socket,
+	'status': status,
 	'in_game': {
 		'types': types,
 		'actions': actions,

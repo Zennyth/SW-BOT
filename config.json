@@ -2,10 +2,17 @@
 	"language": "Fr-FR",
 	"email": "mathis.figuet@orange.fr",
 	"summoners_name": "Zennyth",
-	"web": {
-		"room": 0,
-		"api": "https://sw.mathis-figuet.com",
-		"token" : "..."
+	"api": {
+		"url" : "ws://sw-bot.mathis-figuet.com", 
+		"credentials": {
+			"API_KEY": "API_KEY-SWRM-python"
+		}
+	},
+	"room": {
+		"id": "7400",
+		"password": "0000",
+		"description": "room test",
+		"address": "Lyon"
 	},
 	"port": "8080"
 }

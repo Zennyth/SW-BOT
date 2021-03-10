@@ -18,7 +18,7 @@ SCT = mss()
 PATH = './Ressources/'
 
 class Template():
-	def __init__(self, path, threshold = 0.8, actions = [Action(0, description = "click")], required = True, maxIteration = 0, activeRate = 1):
+	def __init__(self, path, threshold = 0.9, actions = [Action(0, description = "click")], required = True, maxIteration = 0, activeRate = 1):
 		self._path = path
 		self._template = cv2.imread(PATH + self._path + '.jpg', 0)
 		self._threshold = threshold
@@ -39,13 +39,13 @@ class Template():
 				self._iteration = 0
 				return False
 
-	def execute(self):
+	def execute(self, status = None):
 		found = ImageAnalyser.find(self)
 		if found:
 			coordinates = found
 			point = (int(coordinates[0] + self._template.shape[1]*r.random() + BOUNDING_BOX['left']), int(coordinates[1] + self._template.shape[0]*r.random() + BOUNDING_BOX['top']))
 			for action in self._actions:
-				action.execute(point)
+				action.execute(point, status)
 			self._iteration = 0
 			return True
 		else:

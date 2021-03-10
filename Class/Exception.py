@@ -1,3 +1,5 @@
+import Class.Mail
+
 EXCEPTIONS_TYPE = [
 	"Error : NOF",
 	"Error : Wrong ID",
@@ -6,10 +8,14 @@ EXCEPTIONS_TYPE = [
 ]
 
 class Exception():
-	def __init__(self, _id, description = None):
+	def __init__(self, _id, description = None, status = None):
 		self._id = _id
 		self._description = description
 		self._type = EXCEPTIONS_TYPE[self._id]
+
+		if self._id == 2:
+			Mail.send_mail('Manual intervention is required due to quizz template found')
+			if status: status.add_error('Manual intervention is required due to quizz template found')
 		# print(str(self))
 
 
