@@ -18,6 +18,7 @@ class Manager():
                 if Farm._type._stage == task['type']:
                     registry['in_game']['activeFarm']['farm'] = typeFarmName
                     registry['in_game']['activeFarm']['times'] = task['times']
+                    registry['status']._actual = task.type
         
 
     def launchFarm(self, times = 1):

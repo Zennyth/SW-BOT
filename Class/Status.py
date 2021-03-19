@@ -13,6 +13,7 @@ class Status():
             { "type": "r5", "time":0, "runs":0, "total_time":0 },
         ]
         self._tasks = tasks
+        self._actual = "Start"
 
         self.add_error('Manual intervention is required due to quizz template found')
 
@@ -22,7 +23,8 @@ class Status():
             "history": self._history[:9],
             "stats": self._stats,
             "tasks": self._tasks,
-            "errors": self._errors
+            "errors": self._errors,
+            "actual": self._actual
         }
 
     def switch_state(self, boolean):

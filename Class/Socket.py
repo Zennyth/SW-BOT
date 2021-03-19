@@ -30,8 +30,10 @@ class Socket():
                 if order["request"] == "changeStage":
                     print("change Farm")
                     registry['in_game']['activeFarm']['farm'] = 'autofarm'
-                    registry['in_game']['activeFarm']['times'] = 1000
+                    registry['in_game']['activeFarm']['times'] = 10
                     registry['in_game']['activeFarm']['user'] = True
+                    registry['status']._actual = order["data"]["stage"]
+                    self.send_status(registry['status'].send())
                     #Manager.selectFarm(farm = 'autofarm', times = 1000)
 
         @self._socket.event
