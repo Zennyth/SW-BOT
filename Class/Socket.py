@@ -1,3 +1,5 @@
+from setup import registry
+
 import socketio
 import time
 
@@ -22,8 +24,15 @@ class Socket():
         @self._socket.event
         def update_order(order):
             print('order received : ', order)
-            if "request" in order.keys() and order["request"] == "synchronise":
-                self.send_status(status.send())
+            if "request" in order.keys():
+                if order["request"] == "synchronise":
+                    self.send_status(status.send())
+                if order["request"] == "changeStage":
+                    print("change Farm")
+                    registry['in_game']['activeFarm']['farm'] = 'autofarm'
+                    registry['in_game']['activeFarm']['times'] = 1000
+                    registry['in_game']['activeFarm']['user'] = True
+                    #Manager.selectFarm(farm = 'autofarm', times = 1000)
 
         @self._socket.event
         def is_connected(connected):
@@ -35,7 +44,7 @@ class Socket():
             print("Disconected from webSocket.")
 
     def room_create(self, data):
-            self._socket.emit("room_create", data)
+        self._socket.emit("room_create", data)
 
     def send_status(self, status):
         print("Send status ...")

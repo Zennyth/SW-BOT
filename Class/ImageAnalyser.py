@@ -23,8 +23,9 @@ class ImageAnalyser():
 
 		(tH, tW) = template._template.shape[:2]
 		found = None
+		maxMatch = 0
 
-		for scale in np.linspace(0.05, 1.0, 30)[::-1]:
+		for scale in np.linspace(0.75, 1.5, 30)[::-1]:
 			resized = imutils.resize(img_gray, width = int(img_gray.shape[1] * scale))
 			r = img_gray.shape[1] / float(resized.shape[1])
 
@@ -35,10 +36,12 @@ class ImageAnalyser():
 			result = cv2.matchTemplate(edged, template._template, cv2.TM_CCOEFF_NORMED)
 			loc = np.where( result >= template._threshold )
 			(_, maxVal, _, maxLoc) = cv2.minMaxLoc(result)
+			if maxVal > maxMatch: maxMatch = maxVal
 
 			if (found is None or maxVal > found[0]) and len(loc[0]) > 0:
 				found = (maxVal, maxLoc, r)
 		
+		print(template, " => ", maxMatch)
 		if found:
 			(_, maxLoc, r) = found
 			return (int(maxLoc[0] * r), int(maxLoc[1] * r))

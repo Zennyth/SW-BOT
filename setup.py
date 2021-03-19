@@ -18,7 +18,8 @@ setup = DataLayer('setup.json')
 #/ Types of dungeon enumeration \#
 
 types = {
-	"start": Type("launch", "Launch game", "launch"),
+	"start": Type("launch", "Launch game"),
+	"change": Type("change", "Change dungeon"),
 	"db": Type("db12", "Dragon's B12"),
 }
 
@@ -35,11 +36,15 @@ templates = {
 	"launch_skip-event" : Template("launch_skip-event"),
 	"launch_start" : Template("launch_start"),
 	"launch_coffre" : Template("launch_coffre"),
+	"launch_cairos": Template("autobattle/cairos-dungeon/cairos"),
+	"launch_cairos-dungeon": Template("autobattle/cairos-dungeon/necro"),
+	"launch_cairos-go": Template("autobattle/cairos-dungeon/go"),
+	"change_select" : Template("autobattle/select", threshold = 0.85),
 	"autobattle_batiment": Template("autofarm_batiment"),
 	"autobattle_bouton": Template("autofarm_bouton"),
 	"test_template": Template("autofarm_batiment"),
 	"autofarm_replay": Template("autofarm_rejouer"),
-	"autofarm_repetition-battle": Template("autofarm_repetition"),
+	"autofarm_repetition-battle": Template("autofarm_repetition", threshold = 0.85),
 	"refill-energy_shop": Template("shop"),
 	"refill-energy_energy": Template("190"),
 	"refill-energy_validate": Template("oui"),
@@ -60,7 +65,8 @@ sequences = {
 	"launch_skip-event": Sequence(templates = [templates["launch_skip-event"]]),
 	"launch_start": Sequence(templates = [templates["launch_start"]]),
 	"launch_coffre": Sequence(templates = [templates["launch_coffre"]]),
-	"autobattle_menu": Sequence(templates = [templates["autobattle_batiment"], templates["autobattle_bouton"]]),
+	"autobattle_menu": Sequence(templates = [templates["autobattle_batiment"], templates["autobattle_bouton"], templates["launch_cairos"], templates["launch_cairos-dungeon"], templates["launch_cairos-go"], templates["autofarm_repetition-battle"]]),
+	"change_dungeon": Sequence(templates = [templates["change_select"], templates["launch_cairos"], templates["launch_cairos-dungeon"], templates["launch_cairos-go"], templates["autofarm_repetition-battle"]]),
 	"autofarm_launch-battles": Sequence(templates = [templates["autofarm_replay"], templates["autofarm_repetition-battle"]]),
 	"autofarm_launch-launch": Sequence(templates = [templates["autofarm_repetition-battle"]]),
 	"autofarm_launch-refill": Sequence(templates = [templates["refill-energy_shop"], templates["refill-energy_energy"], templates["refill-energy_validate"], templates["refill-energy_ok"], templates["refill-energy_close"], templates["autofarm_repetition-battle"]]),
@@ -72,22 +78,15 @@ sequences = {
 #/ Farms enumeration \#
 
 farms = {
-	"launch": Farm([sequences["launch_skip-event"], sequences["launch_start"], sequences["launch_coffre"], sequences["autobattle_menu"]], types["db"], 2),
-	"test_farm": Farm([sequences["test_sequence"]], types["db"], 0),
+	"change": Farm([sequences["change_dungeon"]], types["change"]),
+	"launch": Farm([sequences["launch_skip-event"], sequences["launch_start"], sequences["launch_coffre"], sequences["autobattle_menu"]], types["start"], 3),
 	"autofarm": Farm([sequences["autofarm_launch-battles"], sequences["autofarm_launch-refill"]], types["db"], 0),
-	"bj5": Farm([sequences["bj5-refill"], sequences["bj5_launch-battle"]], types["db"], 1),
-	"bj5 2": Farm([sequences["bj5-refill"], sequences["bj5_launch-battle"], sequences["bj5_invite-chat"]], types["db"], 1),
 }
 
 #/ Status \#
 
 from Class.Status import Status
-status = Status([])
-
-#/ Socket \#
-
-from Class.Socket import Socket
-socket = Socket(config._data["api"], config._data["room"], status)
+status = Status(setup._data['tasks'])
 
 #/ Mail \#
 # send_mail('Bonjour ce mail provient d un bot')
@@ -107,14 +106,18 @@ if not('screen' in config._data.keys()):
 registry = {
 	'config': config,
 	'setup': setup,
-	'socket': socket,
 	'status': status,
 	'in_game': {
 		'types': types,
 		'actions': actions,
 		'templates': templates,
 		'sequences': sequences,
-		'farms': farms
+		'farms': farms,
+		'activeFarm': {
+			'farm': "launch",
+			'times': 1,
+			'user': False
+		}
 	}
 }
 

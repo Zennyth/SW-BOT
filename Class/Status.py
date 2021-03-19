@@ -51,7 +51,7 @@ class Status():
                 stat["time"] = stat["total_time"]/stat["runs"]
                 is_exist = True
         if not(is_exist):
-            self._stats.append({"type": run["type"], "time":run["time"], "runs":1, "total_time":run["time"]})
+            self._stats.append({"type": run["type"], "time": run["time"], "runs": 1, "total_time": run["time"]})
 
     def update_tasks(self, run):
         for task in self._tasks:
@@ -62,3 +62,8 @@ class Status():
                 if task["times"] >= task["progress"]:
                     task["completed"] = True
                     task["times"] = task["progress"]
+
+    def get_task(self):
+        for task in self._tasks:
+            if not(task["completed"]):
+                return task

@@ -3,5 +3,25 @@
 		"type": "db",
 		"times": 10
 	},
+	"tasks": [
+		{
+			"type": "db12",
+			"times": 10,
+			"completed": false,
+			"progress": 0
+		},
+		{
+			"type": "db12",
+			"times": 10,
+			"completed": false,
+			"progress": 0
+		},
+		{
+			"type": "db12",
+			"times": 10,
+			"completed": false,
+			"progress": 0
+		}
+	],
 	"bj5_paste-message": "Bj5 inv"
 }

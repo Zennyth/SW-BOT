@@ -19,20 +19,22 @@ class Sequence():
 			return self._templates[self._mainIndex]
 
 	def execute(self):
-		for i in range(len(self._templates)):
-			count = 0
-			if i < len(self._templates) - 1:
-				# print(self._templates[i + 1])
-				next_template = self._templates[i + 1].execute()
-				while(isinstance(next_template, Exception)):
-					if self._templates[i]._activeRate < count: 
-						self._templates[i].execute()
-						count = 0
-					
-					count += 1
+		res = self._templates[self._mainIndex].execute()
+		if(len(self._templates) > 1):
+			for i in range(len(self._templates)):
+				count = 0
+				if i < len(self._templates) - 1:
+					# print(self._templates[i + 1])
 					next_template = self._templates[i + 1].execute()
-			else:
-				res = self._templates[i].execute()
-				while(isinstance(res, Exception)):
+					while(isinstance(next_template, Exception)):
+						if self._templates[i]._activeRate < count: 
+							self._templates[i].execute()
+							count = 0
+						
+						count += 1
+						next_template = self._templates[i + 1].execute()
+				else:
 					res = self._templates[i].execute()
+					while(isinstance(res, Exception)):
+						res = self._templates[i].execute()
 		print("execute !")
